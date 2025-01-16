@@ -11,3 +11,7 @@
 复习了bag of word和n-grams模型，bow模型其实就是1-gram模型。这两个class都有`fit`和`transform`函数，作用分别是读取文档并识别出所有的词，以及计算出这些词的频率矩阵。
 
 遇到的一个小问题是，把默认运行的代码放在class里了，导致一直说NGrams未定义，下次要注意。
+
+## Softmax regression
+
+需要仔细复习一下代码中的batch和stochastic策略，代码中使用了很多numpy的内容，并不容易看懂。
