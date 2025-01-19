@@ -35,29 +35,31 @@ class SoftmaxRegression:
 
         loss_history = []
         
-        # train
+        # train (基本上锁定是这里面的问题了把)
         for epoch in range(epochs):
             loss = 0
             # batch update strategy
             if update_strategy == 'batch':
-                prob = softmax(np.dot(self.weight, X.T)) # 使用当前的权重计算概率，prob尺寸和y_one_hot一样
+                # prob = softmax(np.dot(self.weight, X.T)) # 使用当前的权重计算概率，prob尺寸和y_one_hot一样
+                prob = X.dot(self.weight.T)
+                prob = softmax(prob) # 注意这里不需要flatten
                 for i in range(self.n):
-                    loss -= np.log(prob[y[i], i]) # 计算并更新交叉熵损失
+                    loss -= np.log(prob[i][y[i]]) # 计算并更新交叉熵损失
                 weight_update = np.zeros_like(self.weight) # 初始化权重更新 zeros_like返回一个和输入形状相同的全零矩阵
                 # 计算权重更新，这里的计算是对所有数据点的计算，即批量更新。
                 for i in range(self.n):
                     # 公式是：W = W + lr * X.T * (y_one_hot - prob)
-                    weight_update += X[i].reshape(-1, self.m).T.dot((y_one_hot[i] - prob[i]).reshape(1, self.num_classes)).T
+                    weight_update += X[i].reshape(1, self.m).T.dot((y_one_hot[i] - prob[i]).reshape(1, self.num_classes)).T
                 self.weight += self.learning_rate * weight_update / self.n
             # stochastic update strategy
             elif update_strategy == 'stochastic':
-                rand_index = np.arrange(len(X))
+                rand_index = np.arange(len(X))
                 np.random.shuffle(rand_index)
                 for index in list(rand_index):
                     Xi = X[index].reshape(1, -1) # reshape(1, -1) means convert to 2D array
-                    prob = softmax(np.dot(self.weight, Xi.T)) # 这里是Xi，不是X，所以weight x Xi是Feature x classes * 1 x Feature = classes x 1
-                    prob = prob.reshape(-1) # 确保转换成一维 其实没啥必要
-                    loss -= np.log(prob[y[index]])
+                    prob = Xi.dot(self.weight.T)
+                    prob = softmax(prob).flatten()
+                    loss += -np.log(prob[y[index]])
                     self.weight += Xi.reshape(1, self.m).T.dot((y_one_hot[index] - prob).reshape(1, self.num_classes)).T
             else:
                 raise ValueError('Invalid update strategy')
@@ -72,6 +74,7 @@ class SoftmaxRegression:
         prob = softmax(np.dot(self.weight, X.T))
         return np.argmax(prob, axis=0)
     
-    def score(self, X, y):
+    def score(self, X, y): # 得到的值是准确率
         y_pred = self.predict(X)
         return np.mean(y_pred == y)
+    
