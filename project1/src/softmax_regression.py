@@ -41,7 +41,8 @@ class SoftmaxRegression:
             # batch update strategy
             if update_strategy == 'batch':
                 # prob = softmax(np.dot(self.weight, X.T)) # 使用当前的权重计算概率，prob尺寸和y_one_hot一样
-                prob = X.dot(self.weight.T)
+                # prob = X.dot(self.weight.T) # 这个写法ok的 没有问题
+                prob = np.dot(X, self.weight.T) # 这个写法也ok的 没有问题
                 prob = softmax(prob) # 注意这里不需要flatten
                 for i in range(self.n):
                     loss -= np.log(prob[i][y[i]]) # 计算并更新交叉熵损失
@@ -57,7 +58,8 @@ class SoftmaxRegression:
                 np.random.shuffle(rand_index)
                 for index in list(rand_index):
                     Xi = X[index].reshape(1, -1) # reshape(1, -1) means convert to 2D array
-                    prob = Xi.dot(self.weight.T)
+                    # prob = Xi.dot(self.weight.T) # 这个写法ok的 没有问题
+                    prob = np.dot(Xi, self.weight.T) # 这个写法也ok的 没有问题
                     prob = softmax(prob).flatten()
                     loss += -np.log(prob[y[index]])
                     self.weight += Xi.reshape(1, self.m).T.dot((y_one_hot[index] - prob).reshape(1, self.num_classes)).T

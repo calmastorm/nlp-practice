@@ -17,9 +17,9 @@ if __name__ == '__main__':
     X_data, y_data = read_data()
     # debug快速调试，如果debug=1，只取前500个数据
     if debug == 1:
-        print('Debug mode, only use 500 data.')
-        X_data = X_data[:3000]
-        y_data = y_data[:3000]
+        print('Debug mode, only use partial data.')
+        X_data = X_data[:300]
+        y_data = y_data[:300]
     else:
         print('Normal mode, use all data.')
     # 这里y_data是list，需要转换成numpy array
@@ -54,7 +54,7 @@ if __name__ == '__main__':
                           epochs=epochs,
                           num_classes=5,
                           print_loss_step=epochs//10,
-                          update_strategy='stochastic')
+                          update_strategy='batch')
     plt.plot(np.arange(len(history1)), np.array(history1))
     plt.title('Bag of Words')
     plt.show()
@@ -68,7 +68,7 @@ if __name__ == '__main__':
                           epochs=epochs,
                           num_classes=5,
                           print_loss_step=epochs//10,
-                          update_strategy='stochastic')
+                          update_strategy='batch')
     plt.plot(np.arange(len(history2)), np.array(history2))
     plt.title('N-grams')
     plt.show()
