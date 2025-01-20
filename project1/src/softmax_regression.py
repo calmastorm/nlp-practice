@@ -60,7 +60,9 @@ class SoftmaxRegression:
                     Xi = X[index].reshape(1, -1) # reshape(1, -1) means convert to 2D array
                     # prob = Xi.dot(self.weight.T) # 这个写法ok的 没有问题
                     prob = np.dot(Xi, self.weight.T) # 这个写法也ok的 没有问题
-                    prob = softmax(prob).flatten()
+                    # prob = softmax(prob).flatten() 这个是基本flatten的写法
+                    # prob = softmax(prob).reshape(-1,) 使用reshape(-1,)等效于flatten
+                    prob = softmax(prob).reshape(-1) # 使用reshape(-1)也等效于flatten
                     loss += -np.log(prob[y[index]])
                     self.weight += Xi.reshape(1, self.m).T.dot((y_one_hot[index] - prob).reshape(1, self.num_classes)).T
             else:

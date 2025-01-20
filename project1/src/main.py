@@ -54,7 +54,7 @@ if __name__ == '__main__':
                           epochs=epochs,
                           num_classes=5,
                           print_loss_step=epochs//10,
-                          update_strategy='batch')
+                          update_strategy='stochastic')
     plt.plot(np.arange(len(history1)), np.array(history1))
     plt.title('Bag of Words')
     plt.show()
@@ -68,7 +68,7 @@ if __name__ == '__main__':
                           epochs=epochs,
                           num_classes=5,
                           print_loss_step=epochs//10,
-                          update_strategy='batch')
+                          update_strategy='stochastic')
     plt.plot(np.arange(len(history2)), np.array(history2))
     plt.title('N-grams')
     plt.show()
