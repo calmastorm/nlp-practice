@@ -30,4 +30,4 @@ batch更新方式就是一次性计算所有数据点，一次性更新所有权
 
 **回答2：**首先，reshape(-1)和flatten都能把数组展平，也就是把多为数组转成一维数组，在这方面两者效果是相同的。他们的关键区别在于，`flatten()`不会修改原数组（因此需要一个变量来接收），而`reshape(-1)`会修改原数组，这一规则也符合`reshape()`使用其他参数。假设`reshaped = arr.reshape(-1)`，并且`reshaped[0] = 10`，那么不仅`arr[10]`变成了`10`，`reshaped[0]`也变成了`10`。至于这个`-1`，可以理解为默认或者自动推导。如果`arr`是一个`(4, 8)`的矩阵，调用`arr.reshape(2, -1)`，则会自动让它变成`(2, 16)`的矩阵。这个`-1`也可以在行参数那里，那定好列参数就会自动推导行参数。图片里有更多的相关用法。
 
-![reshape_mathod](img\reshape_mathod.png)
+![reshape_mathod](img/reshape_mathod.png)
