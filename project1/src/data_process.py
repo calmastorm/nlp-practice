@@ -2,7 +2,7 @@ import pandas as pd
 import os
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-file_path = os.path.join(current_dir, '../data/datasets/train.tsv')
+file_path = os.path.join(current_dir, '../../data/datasets/train.tsv')
 
 
 def read_data(file_path=file_path):

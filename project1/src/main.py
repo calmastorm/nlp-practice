@@ -22,7 +22,7 @@ if __name__ == '__main__':
         y_data = y_data[:300]
     else:
         print('Normal mode, use all data.')
-    # 这里y_data是list，需要转换成numpy array
+    # 这里y_data是pandas的dataframe，需要转换成numpy array
     y = np.array(y_data).reshape(len(y_data), 1)
 
     # split data
