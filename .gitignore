@@ -1,0 +1,11 @@
+# Ignore dataset files
+*.txt
+*.csv
+*.tsv
+*.json
+*.xml
+*.xlsx
+*.h5
+*.pkl
+*.zip
+*.path
