@@ -1,6 +1,6 @@
 import torch.nn as nn
 import torch
-import torch.nn.functional as f
+import torch.nn.functional as F
 
 class TextRNN(nn.Module):
     def __init__(self, vocab_size,
@@ -64,5 +64,28 @@ class TextRNN(nn.Module):
 
         return logits
     
+class TextCNN(nn.Module):
+    def __init__(self, vocab_size, embedding_dim, num_classes, embedding_vectors=None, kernel_num=100, kernel_size=[3, 4, 5], dropout=0.5):
+        super(TextCNN, self).__init__()
+
+        if embedding_vectors is None:
+            self.embed = nn.Embedding(num_embeddings=vocab_size, embedding_dim=embedding_dim)
+        else:
+            self.embed = nn.Embedding(num_embeddings=vocab_size, embedding_dim=embedding_dim, _weight=embedding_vectors)
+        self.convs = nn.ModuleList([nn.Conv2d(1, kernel_num, (K, embedding_dim)) for K in kernel_size])
+        self.dropout = nn.Dropout(dropout)
+        self.feature2label = nn.Linear(3*kernel_num, num_classes)
+
+    def forward(self, x):
+        print('run forward...')
+        embed_out = self.embed(x).unsqueeze(1)
+        conv_out = [F.relu(conv(embed_out)).squeeze(3) for conv in self.convs]
+        pool_out = [F.max_pool1d(block, block.size(2)).squeeze(2) for block in conv_out]
+        pool_out = torch.cat(pool_out, 1)
+        logits = self.feature2label(pool_out)
+        return logits
 if __name__ == '__main__':
-    textrnn = TextRNN(vocab_size=100, embedding_dim=100, hidden_size=100, num_classes=5, weights=None)
+    model = TextCNN(vocab_size=10, embedding_dim=10, num_classes=10)
+    x = torch.randint(10, (10, 20))
+    logits = model.forward(x)
+    print(f'logits: {logits}')
