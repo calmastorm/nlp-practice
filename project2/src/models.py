@@ -37,8 +37,8 @@ class TextRNN(nn.Module):
             self.hidden2label = nn.Linear(hidden_size, num_classes)
         elif rnn_type == 'LSTM':
             # LSTM也可以直接调用，甚至可以直接选用bidirectional
-            self.lstm = nn.LSTM(input_size=embedding_dim, hidden_size=hidden_size, batch_first=True, bidirectional=True)
-    
+            self.lstm = nn.LSTM(input_size=embedding_dim, hidden_size=hidden_size, batch_first=True, bidirectional=False)
+            self.hidden2label = nn.Linear(hidden_size*1, num_classes)
     def forward(self, input_sents):
         '''前向传播 对输入的input_sents进行词嵌入处理 然后通过RNN或LSTM处理 生成最后logits
         '''
@@ -56,10 +56,12 @@ class TextRNN(nn.Module):
             # randn随机初始化隐藏状态h0和细胞状态c0，每个形状如下
             h0, c0 = torch.randn(2, batch_size, self.hidden_size), torch.randn(2, batch_size, self.hidden_size)
             output, (hn, cn) = self.lstm(embed_out, (h0, c0))
+            # hn = torch.cat(hn[0], hn[1], dim=1)
         # 把隐藏状态hn通过一个线性层self.hidden2label，生成分类logits
         # self.hidden2label是一个nn.Linear()类型，squeeze(0)是去掉第0维
         # 在代码中，hn的形状是(num_directions, batch_size, hidden_size) 第0维是num_directions 就是说RNN/LSTM是否是单向或双向
-        # 如果是单向则为1 如果是双向则为2 
+        # 如果是单向则为1 如果是双向则为2
+
         logits = self.hidden2label(hn).squeeze(0)
 
         return logits
@@ -84,6 +86,7 @@ class TextCNN(nn.Module):
         pool_out = torch.cat(pool_out, 1)
         logits = self.feature2label(pool_out)
         return logits
+
 if __name__ == '__main__':
     model = TextCNN(vocab_size=10, embedding_dim=10, num_classes=10)
     x = torch.randint(10, (10, 20))
