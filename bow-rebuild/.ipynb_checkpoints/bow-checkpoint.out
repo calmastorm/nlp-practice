@@ -1,0 +1,19 @@
+data samples:
+    PhraseId  ...  Sentiment
+0         1  ...          1
+1         2  ...          2
+2         3  ...          2
+3         4  ...          2
+4         5  ...          2
+
+[5 rows x 4 columns]
+label dist:
+ Sentiment
+2    79582
+3    32927
+1    27273
+4     9206
+0     7072
+Name: count, dtype: int64
+Accuracy: 0.5883890811226451
+Macro-F1: 0.42102397029714
